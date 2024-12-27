@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Management;
 
 namespace FileUsing
@@ -145,11 +146,52 @@ namespace FileUsing
             catch (Exception e)
             { Console.WriteLine(e.Message); }
         }
+        public static void CreateFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                using (StreamWriter sw = File.CreateText(filePath))
+                {
+                    sw.WriteLine("Олег");
+                    sw.WriteLine("Дмитрий");
+                    sw.WriteLine("Иван");
+                }
+            }
+        }
+        public static void ReadFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                using (StreamReader sr = File.OpenText(filePath))
+                {
+                    string str = "";
+                    while ((str = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine(str);
+                    }
+                }
+            }
+        }
+        public static void ShowCSCode()
+        {
+            string filePath = @"I:\SH Proj\SK\CSharp-Exercise-8\FileUsing\Program.cs";
+            if (File.Exists(filePath))
+            {
+                using (StreamReader sr = File.OpenText(filePath))
+                {
+                    string str = "";
+                    while ((str = sr.ReadLine()) != null)
+                    {
+                        Console.WriteLine(str);
+                    }
+                }
+            }
+        }
         static void Main(string[] args)
         {
-            CreateDir(@"C:\Serious Folder");
-            RemoveToBin(@"C:\Serious Folder");
-            GetCatalogs();
+
+            ShowCSCode();
+
             Console.WriteLine("Directories count: " + GetDirectoriesCount("C:\\"));
             Console.WriteLine("Files count:       " + GetFilesCount("C:\\"));
         }
