@@ -1,5 +1,5 @@
 ﻿
-
+using Microsoft.VisualBasic.FileIO;
 using System.Management;
 
 namespace FileUsing
@@ -81,16 +81,74 @@ namespace FileUsing
         }
         public static void CreateDir(string dirName)
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(dirName);
-            if(!dirInfo.Exists)
+            try
             {
-                dirInfo.Create();
+                DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+                if (!dirInfo.Exists)
+                {
+                    dirInfo.Create();
+                }
+                dirInfo.CreateSubdirectory("New Folder");
             }
-            dirInfo.CreateSubdirectory("New Folder");dirInfo.
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public static void RemoveDir(string dirName)
+        {
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+                if (dirInfo.Exists)
+                {
+                    dirInfo.Delete(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public static void MoveDir(string dirName, string newPath)
+        {
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+                if (dirInfo.Exists && !Directory.Exists(newPath))
+                {
+                    dirInfo.MoveTo(newPath);
+                }
+            }
+            catch (Exception e)
+            { Console.WriteLine(e.Message); }
+        }
+        public static void CreateOnDesktop(string dirName)
+        {
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(@"C:\Users\user\Desktop");
+                if (!Directory.Exists(dirName))
+                {
+                    dirInfo.CreateSubdirectory("testFolder");
+                }
+            }
+            catch (Exception e)
+            { Console.WriteLine(e.Message); }
+        }
+        public static void RemoveToBin(string dirName)
+        {
+            try
+            {
+                FileSystem.DeleteDirectory(dirName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+            }
+            catch (Exception e)
+            { Console.WriteLine(e.Message); }
         }
         static void Main(string[] args)
         {
             CreateDir(@"C:\Serious Folder");
+            RemoveToBin(@"C:\Serious Folder");
             GetCatalogs();
             Console.WriteLine("Directories count: " + GetDirectoriesCount("C:\\"));
             Console.WriteLine("Files count:       " + GetFilesCount("C:\\"));
