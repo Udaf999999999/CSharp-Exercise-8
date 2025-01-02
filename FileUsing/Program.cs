@@ -198,45 +198,27 @@ namespace FileUsing
                 }
             }
         }
+        public static void ReadFromBinaryCFX(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                string str;
+                using (BinaryReader binaryReader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+                {
+                    str = binaryReader.ReadString();
+                    Console.Write("Data creation: " + str);
+                }
+            }
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Directories count: " + GetDirectoriesCount("C:\\"));
             Console.WriteLine("Files count:       " + GetFilesCount("C:\\"));
 
-            AddLastTimeToCode();
+            ReadFromBinaryCFX(@"C:\BinaryFile.bin");
 
-            string tempFile = Path.GetTempFileName(); // используем генерацию имени файла.
-            var fileInfo = new FileInfo(tempFile); // Создаем объект класса FileInfo.
-                                                   //Создаем файл и записываем в него.
-            using (StreamWriter sw = fileInfo.CreateText())
-            {
-                sw.WriteLine("Игорь");
-                sw.WriteLine("Андрей");
-                sw.WriteLine("Сергей");
-            }
 
-            try
-            {
-                string tempFile2 = Path.GetTempFileName();
-                var fileInfo2 = new FileInfo(tempFile2);
-
-                // Убедимся, что файл назначения точно отсутствует
-                fileInfo2.Delete();
-
-                // Копируем информацию
-                fileInfo.CopyTo(tempFile2);
-                Console.WriteLine($"{tempFile} скопирован в файл {tempFile2}.");
-                //Удаляем ранее созданный файл.
-                fileInfo.Delete();
-                Console.WriteLine($"{tempFile} удален.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Ошибка: {e}");
-            }
 
         }
     }
 }
-//02.01.2025 18:28:09
-//02.01.2025 18:28:16
