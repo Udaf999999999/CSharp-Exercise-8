@@ -3,6 +3,7 @@ using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Management;
 using System.Reflection.PortableExecutable;
+using System.Text.Json;
 
 namespace FileUsing
 {
@@ -235,14 +236,80 @@ namespace FileUsing
                 }
             }
         }
+        [Serializable] // Атрибут сериализации
+        class Person
+        {
+            // Простая модель класса
+            public string Name { get; set; }
+            public int Year { get; set; }
+
+            // Метод-конструктор
+            public Person(string name, int year)
+            {
+                Name = name;
+                Year = year;
+            }
+        }
+        [Serializable]
+        class Pet
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+            public Pet(string name, int age)
+            {
+                Name = name;
+                Age = age;
+            }
+        }
+        [Serializable]
+        public class Contact
+        {
+            public string Name { get; set; }
+            public long PhoneNumber { get; set; }
+            public string Email { get; set; }
+
+            public Contact(string name, long phoneNumber, string email)
+            {
+                Name = name;
+                PhoneNumber = phoneNumber;
+                Email = email;
+            }
+
+            public void Serialize(BinaryWriter binaryWriter)
+            {
+                binaryWriter.Write(Name);
+                binaryWriter.Write(PhoneNumber);
+                binaryWriter.Write(Email);
+            }
+            public static Contact Deserialize(BinaryReader binaryReader)
+            {
+                string name = binaryReader.ReadString();
+                long phoneNumber = binaryReader.ReadInt64();
+                string email = binaryReader.ReadString();
+
+                return new Contact(name, phoneNumber, email);
+            }
+        }
         static void Main(string[] args)
         {
-            Console.WriteLine("Directories count: " + GetDirectoriesCount("C:\\"));
-            Console.WriteLine("Files count:       " + GetFilesCount("C:\\"));
+            Contact contact = new Contact("Oleg", 999, "Email@");
 
-            WriteToBinaryCFG(@"C:\BinaryFile.bin");
-            ReadFromBinaryCFG(@"C:\BinaryFile.bin");
+            using (FileStream fs = new FileStream("contact.bin", FileMode.Create))
+            using (BinaryWriter binaryWriter = new BinaryWriter(fs))
+            {
+                contact.Serialize(binaryWriter);
+            }
 
+            Contact contact1;
+
+            using (FileStream fs = new FileStream("contact.bin", FileMode.Open))
+            using (BinaryReader binaryReader = new BinaryReader(fs))
+            {
+                contact1 = Contact.Deserialize(binaryReader);
+            }
+
+            Console.WriteLine("Name: " + contact1.Name + " phone number: " + contact1.PhoneNumber
+                + " email: " + contact1.Email);
 
 
         }
