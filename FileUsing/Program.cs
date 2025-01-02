@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Management;
+using System.Reflection.PortableExecutable;
 
 namespace FileUsing
 {
@@ -198,15 +199,39 @@ namespace FileUsing
                 }
             }
         }
-        public static void ReadFromBinaryCFX(string filePath)
+        public static void ReadFromBinaryCFG(string filePath)
         {
             if (File.Exists(filePath))
             {
                 string str;
-                using (BinaryReader binaryReader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                using (BinaryReader binaryReader = new BinaryReader(fs))
                 {
-                    str = binaryReader.ReadString();
-                    Console.Write("Data creation: " + str);
+                    try
+                    {
+                        while (fs.Position < fs.Length) // Проверяем, не достигли ли конца файла
+                        {
+                            str = binaryReader.ReadString();
+                            Console.WriteLine(str);
+                        }
+                    }
+                    catch (EndOfStreamException)
+                    {
+                        // Обработка конца потока, если необходимо
+                        Console.WriteLine("Достигнут конец файла.");
+                    }
+                }
+            }
+        }
+        public static void WriteToBinaryCFG(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Append, FileAccess.Write))
+                using (BinaryWriter binaryWriter = new BinaryWriter(fs))
+                {
+                    binaryWriter.Write("File changed in: " + DateTime.Now + " on OS: " + Environment.OSVersion);
                 }
             }
         }
@@ -215,7 +240,8 @@ namespace FileUsing
             Console.WriteLine("Directories count: " + GetDirectoriesCount("C:\\"));
             Console.WriteLine("Files count:       " + GetFilesCount("C:\\"));
 
-            ReadFromBinaryCFX(@"C:\BinaryFile.bin");
+            WriteToBinaryCFG(@"C:\BinaryFile.bin");
+            ReadFromBinaryCFG(@"C:\BinaryFile.bin");
 
 
 
