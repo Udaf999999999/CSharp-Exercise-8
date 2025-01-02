@@ -187,11 +187,23 @@ namespace FileUsing
                 }
             }
         }
-
+        public static void AddLastTimeToCode()
+        {
+            string filePath = @"I:\SH Proj\SK\CSharp-Exercise-8\FileUsing\Program.cs";
+            if (File.Exists(filePath))
+            {
+                using (StreamWriter sr = File.AppendText(filePath))
+                {
+                    sr.WriteLine("//" + DateTime.Now);
+                }
+            }
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Directories count: " + GetDirectoriesCount("C:\\"));
             Console.WriteLine("Files count:       " + GetFilesCount("C:\\"));
+
+            AddLastTimeToCode();
 
             string tempFile = Path.GetTempFileName(); // используем генерацию имени файла.
             var fileInfo = new FileInfo(tempFile); // Создаем объект класса FileInfo.
@@ -226,3 +238,5 @@ namespace FileUsing
         }
     }
 }
+//02.01.2025 18:28:09
+//02.01.2025 18:28:16
